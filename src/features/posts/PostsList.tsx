@@ -1,5 +1,5 @@
 import FeaturedPost from '../../components/FeaturedPost';
-import { useGetPostsQuery } from '../posts/postSlice';
+import { useGetPostsQuery } from './postsSlice';
 import Grid from '@mui/material/Grid';
 
 const PostsList = () => {
@@ -11,13 +11,15 @@ const PostsList = () => {
   }
   if (isSuccess) {
     console.log(posts);
-    content = posts.ids.map((postId) => {
-      return (
-        <Grid item xs={12} md={4} key={postId}>
-          <FeaturedPost key={postId} postId={postId} />
-        </Grid>
-      );
-    });
+    content = posts.ids
+      .filter((id) => posts.entities[id] !== undefined)
+      .map((id) => {
+        return (
+          <Grid item xs={12} md={4} key={id}>
+            <FeaturedPost key={id} postDetails={posts.entities[id]} />
+          </Grid>
+        );
+      });
   }
   if (isError) {
     content = <p></p>;

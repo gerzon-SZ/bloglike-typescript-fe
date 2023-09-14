@@ -1,14 +1,25 @@
 import { apiSlice } from '../api/apiSlice';
-
+import { createSlice } from '@reduxjs/toolkit';
 interface User {
   id: string;
   name: string;
   username: string;
   email: string;
 }
+interface LoginCredentials {
+  username: string;
+  password: string;
+}
+
+interface UserDetails {
+  currentUser: null;
+  userId: null;
+  errorMessage: '';
+}
+
 type UsersResponse = User[];
 
-export const userSlice = apiSlice.injectEndpoints({
+export const usersApiSlice = apiSlice.injectEndpoints({
   endpoints: (build) => ({
     getUsers: build.query<UsersResponse, void>({
       query: () => 'users',
@@ -61,6 +72,13 @@ export const userSlice = apiSlice.injectEndpoints({
       },
       invalidatesTags: (result, error, id) => [{ type: 'User', id }],
     }),
+    login: build.mutation<UserDetails, LoginCredentials>({
+      query: (credentials) => ({
+        url: `/api/v1/user/login`,
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
   }),
 });
 
@@ -70,4 +88,30 @@ export const {
   useGetUserQuery,
   useUpdateUserMutation,
   useDeleteUserMutation,
-} = userSlice;
+} = usersApiSlice;
+
+// Config slice
+const initialState = {
+  currentUser: null,
+  userId: null,
+  errorMessage: '',
+} as UserDetails;
+export const userSlice = createSlice({
+  name: 'user',
+  initialState,
+  reducers: {
+    logout: (state) => {
+      state.currentUser = null;
+      state.errorMessage = '';
+    },
+  },
+});
+
+// Export actions
+export const { logout } = userSlice.actions;
+
+// Select state currentUser from slice
+export const selectUser = (state: UserDetails) => state.currentUser;
+
+// Export reducer
+export default userSlice.reducer;

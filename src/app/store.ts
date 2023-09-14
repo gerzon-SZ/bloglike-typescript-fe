@@ -7,6 +7,9 @@ export const store = configureStore({
     [apiSlice.reducerPath]: apiSlice.reducer,
     counter: counterReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat([apiSlice.middleware]),
+  devTools: true,
 });
 
 export type appDispatch = typeof store.dispatch;

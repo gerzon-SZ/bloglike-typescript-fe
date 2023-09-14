@@ -6,39 +6,41 @@ import { Link } from 'react-router-dom';
 import CardMedia from '@mui/material/CardMedia';
 import PostAuthor from '../features/posts/PostAuthor';
 import TimeAgo from '../features/posts/TimeAgo';
-import { useGetPostsQuery, Post } from '../features/posts/postsSlice';
+import { Post } from '../features/posts/postsSlice';
 
-const FeaturedPost = ({ postId }: { postId: string }) => {
-  const { post } = useGetPostsQuery('getPosts', {
-    selectFromResult: ({ data }: Post) => ({
-      post: data?.entities[postId] as Post,
-    }),
-  });
+interface FeaturedPostProps {
+  // postId: EntityId; // Define the postId prop
+  postDetails?: Post;
+}
+
+const FeaturedPost: React.FC<FeaturedPostProps> = ({ postDetails }) => {
+  // const { post } = useGetPostsQuery();
+
   return (
     <article>
       <Card sx={{ display: 'flex', minHeight: '250px' }}>
         <CardContent sx={{ flex: 1 }}>
           <Typography component="h2" variant="h5">
-            {post.title}
+            {postDetails?.title.substring(0, 20)} ...
           </Typography>
           <Typography variant="subtitle1" color="primary">
-            <PostAuthor userId={post.userId} />
+            <PostAuthor userId={postDetails?.userId} />
           </Typography>
           <Typography variant="subtitle1" color="text.secondary">
-            <TimeAgo timestamp={post.createdAt} />
+            <TimeAgo timestamp={postDetails?.createdAt} />
           </Typography>
           <Typography variant="subtitle1" paragraph>
-            {post.body.substring(0, 75)}...
+            {postDetails?.body.substring(0, 75)}...
           </Typography>
           <Typography variant="subtitle1" color="primary">
-            <Link to={`post/${post.id}`}>Continue reading...</Link>
+            <Link to={`post/${postDetails?.id}`}>Continue reading...</Link>
           </Typography>
         </CardContent>
         <CardMedia
           component="img"
           sx={{ width: 160, display: { xs: 'none', sm: 'block' } }}
-          image={post.image}
-          alt={post.imageLabel}
+          image={postDetails?.image || 'https://source.unsplash.com/random'}
+          alt={postDetails?.imageLabel}
         />
       </Card>
     </article>

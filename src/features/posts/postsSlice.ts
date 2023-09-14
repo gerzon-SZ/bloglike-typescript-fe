@@ -1,33 +1,45 @@
 import { apiSlice } from '../api/apiSlice';
 import { createEntityAdapter } from '@reduxjs/toolkit';
-
+import { sub } from 'date-fns';
 import type { EntityState } from '@reduxjs/toolkit';
 export interface Post {
   id: string;
   title: string;
-  content: string;
-  user: string;
+  body: string;
+  userId: string;
+  createdAt: string;
+  image: string;
+  imageLabel: string;
   date: string;
 }
+
 const postsAdapter = createEntityAdapter({
   sortComparer: (a: Post, b: Post) => b.date.localeCompare(a.date),
 });
 
 const initialState = postsAdapter.getInitialState();
 
-type PostsResponse = Post[];
+export type PostsResponse = Post[];
 
 export const postSlice = apiSlice.injectEndpoints({
   endpoints: (build) => ({
     getPosts: build.query<EntityState<Post>, void>({
       query: () => 'posts',
       transformResponse(response: Post[]) {
-        return postsAdapter.addMany(initialState, response);
+        let min = 1;
+        const posts = response.map((post) => {
+          if (!post?.date)
+            post.date = sub(new Date(), { minutes: min++ }).toISOString();
+          return {
+            ...post,
+          };
+        });
+        return postsAdapter.setAll(initialState, posts);
       },
       providesTags: (result) =>
         result
           ? [
-              ...result.map(({ id }) => ({ type: 'Post' as const, id })),
+              ...result.ids.map((id) => ({ type: 'Post' as const, id })),
               { type: 'Post', id: 'LIST' },
             ]
           : [{ type: 'Post', id: 'LIST' }],
