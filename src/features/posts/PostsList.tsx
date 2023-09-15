@@ -1,9 +1,17 @@
 import FeaturedPost from '../../components/FeaturedPost';
 import { useGetPostsQuery } from './postsSlice';
 import Grid from '@mui/material/Grid';
+import { useState, useEffect } from 'react';
 
 const PostsList = () => {
   const { data: posts, isLoading, isSuccess, isError } = useGetPostsQuery();
+  const [selectedPost, setSelectedPost] = useState(null);
+
+  useEffect(() => {
+    if (selectedPost) {
+      console.log(selectedPost, 'selectedPost');
+    }
+  }, [selectedPost]);
 
   let content;
   if (isLoading) {

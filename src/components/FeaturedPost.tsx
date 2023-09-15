@@ -5,12 +5,11 @@ import Card from '@mui/material/Card';
 import { Link } from 'react-router-dom';
 import CardMedia from '@mui/material/CardMedia';
 import PostAuthor from '../features/posts/PostAuthor';
+import PostEditDelete from './PostEditDelete';
 import TimeAgo from '../features/posts/TimeAgo';
 import { Post } from '../features/posts/postsSlice';
-
 interface FeaturedPostProps {
-  // postId: EntityId; // Define the postId prop
-  postDetails?: Post;
+  postDetails: Post;
 }
 
 const FeaturedPost: React.FC<FeaturedPostProps> = ({ postDetails }) => {
@@ -18,8 +17,8 @@ const FeaturedPost: React.FC<FeaturedPostProps> = ({ postDetails }) => {
 
   return (
     <article>
-      <Card sx={{ display: 'flex', minHeight: '250px' }}>
-        <CardContent sx={{ flex: 1 }}>
+      <Card sx={{ display: 'flex', minHeight: '100%' }}>
+        <CardContent sx={{ flex: 1, minHeight: '100%', position: 'relative' }}>
           <Typography component="h2" variant="h5">
             {postDetails?.title.substring(0, 20)} ...
           </Typography>
@@ -30,12 +29,14 @@ const FeaturedPost: React.FC<FeaturedPostProps> = ({ postDetails }) => {
             <TimeAgo timestamp={postDetails?.createdAt} />
           </Typography>
           <Typography variant="subtitle1" paragraph>
-            {postDetails?.body.substring(0, 75)}...
+            {postDetails?.body.substring(0, 40)}...
           </Typography>
           <Typography variant="subtitle1" color="primary">
             <Link to={`post/${postDetails?.id}`}>Continue reading...</Link>
           </Typography>
+          <PostEditDelete post={postDetails} />
         </CardContent>
+
         <CardMedia
           component="img"
           sx={{ width: 160, display: { xs: 'none', sm: 'block' } }}
