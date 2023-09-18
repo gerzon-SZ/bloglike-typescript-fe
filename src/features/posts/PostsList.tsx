@@ -23,7 +23,15 @@ const PostsList = () => {
       .filter((id) => posts.entities[id] !== undefined)
       .map((id) => {
         return (
-          <Grid item xs={12} md={4} key={id}>
+          <Grid
+            item
+            xs={12}
+            // sm={6}
+            // lg={3}
+            md={4}
+            key={id}
+            sx={{ margin: 0, marginLeft: 'auto', marginRight: 'auto' }}
+          >
             <FeaturedPost key={id} postDetails={posts.entities[id]} />
           </Grid>
         );
@@ -33,11 +41,20 @@ const PostsList = () => {
     content = <p></p>;
   }
   return (
-    <section>
-      <Grid container spacing={1}>
-        {content}
-      </Grid>
-    </section>
+    <Grid
+      container
+      spacing={1}
+      sx={{
+        width: '100%',
+        margin: '0',
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      {content}
+    </Grid>
   );
 };
 export default PostsList;

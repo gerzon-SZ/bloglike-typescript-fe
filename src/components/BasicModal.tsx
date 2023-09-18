@@ -21,7 +21,7 @@ const style = {
   p: 4,
 };
 interface BasicModalProps {
-  post: Post;
+  post?: Post;
   text: string | React.ReactNode;
   context: string;
 }
@@ -33,17 +33,19 @@ export const BasicModal: React.FC<BasicModalProps> = ({
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const action = context.split(' ')[0].toLowerCase();
+  const formAction = context.split(' ')[1].toLowerCase();
   const form =
-    context === 'edit' ? (
+    action === 'user' ? (
       <FormUser context="edit" />
     ) : (
-      <FormPost context="edit" />
+      <FormPost context="post" handleClose={handleClose} />
     );
   return (
     <div>
       <Button
         onClick={handleOpen}
-        sx={{ padding: '0', margin: '0', minWidth: '0' }}
+        sx={{ padding: '0', margin: '0', minWidth: '0', color: 'inherit' }}
       >
         {text}
       </Button>

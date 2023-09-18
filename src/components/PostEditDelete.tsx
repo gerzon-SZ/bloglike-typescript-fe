@@ -5,7 +5,6 @@ import styled from '@emotion/styled';
 import { AlertDialog } from './dialogs/AlertDialog';
 import { BasicModal } from './BasicModal';
 import { Post } from '../features/posts/postsSlice';
-import { useDeletePostMutation } from '../features/posts/postsSlice';
 interface PostEditDeleteProps {
   post: Post;
 }
@@ -14,7 +13,6 @@ const ActionButtonContainer = styled.div`
   justify-content: end;
   align-items: center;
   column-gap: 0.25rem;
-
   position: absolute;
   right: 0;
   bottom: 0;
@@ -27,7 +25,7 @@ const PostEditDelete: React.FC<PostEditDeleteProps> = ({ post }) => {
       <BasicModal
         text={<EditIcon sx={{ maxHeight: '20px', cursor: 'pointer' }} />}
         post={post}
-        context="edit"
+        context="edit post"
       />
       <AlertDialog
         text={<DeleteIcon sx={{ maxHeight: '20px', cursor: 'pointer' }} />}

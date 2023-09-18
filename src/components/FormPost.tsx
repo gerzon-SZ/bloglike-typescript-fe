@@ -3,9 +3,11 @@ import InputFormText from './inputs/inputFormText';
 import { useForm } from 'react-hook-form';
 import styled from '@emotion/styled';
 import Button from '@mui/material/Button';
+import React from 'react';
 import { useAddPostMutation } from '../features/posts/postsSlice';
 interface PostFormProps {
   context: string;
+  handleClose?: () => void;
 }
 interface PostFormValues {
   title: string;
@@ -23,19 +25,26 @@ const styledSection = styled.section`
   flex-direction: column;
   gap: 1rem;
 `;
-export default function FormPost({ context }: PostFormProps) {
-  const { control, handleSubmit, formState } = useForm();
+export default function FormPost({ context, handleClose }: PostFormProps) {
+  const [addPost, { isLoading: newPostLoading, data: postedData }] =
+    useAddPostMutation();
+  const { control, register, handleSubmit, formState } = useForm();
   const canSave = !formState.isSubmitting;
-  const [addNewPost, { isLoading }] = useAddPostMutation();
   const onSubmit = async (data: PostFormValues) => {
     if (canSave) {
       try {
-        await addNewPost(data).unwrap();
+        await addPost(data).unwrap();
+        handleClose && handleClose();
       } catch (err) {
         console.error('Failed to save the post', err);
       }
     }
   };
+  React.useEffect(() => {
+    if (postedData) {
+      console.log(postedData, 'postedData');
+    }
+  }, [postedData]);
   return (
     <Container maxWidth="sm">
       <h2>Add a New Post</h2>
@@ -56,13 +65,7 @@ export default function FormPost({ context }: PostFormProps) {
           rules={{ required: 'Post Content is required' }}
           multiline={true}
         />
-        <InputFormText
-          type="hidden"
-          name="userId"
-          label="User Id"
-          control={control}
-          rules={{ required: 'User Id is required' }}
-        />
+        <input type="hidden" id="userId" value="1" {...register('userId')} />
         <Button type="submit" variant="contained" disabled={!canSave}>
           Save Post
         </Button>

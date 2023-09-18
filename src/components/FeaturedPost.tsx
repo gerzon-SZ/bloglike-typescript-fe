@@ -8,6 +8,7 @@ import PostAuthor from '../features/posts/PostAuthor';
 import PostEditDelete from './PostEditDelete';
 import TimeAgo from '../features/posts/TimeAgo';
 import { Post } from '../features/posts/postsSlice';
+import Paper from '@mui/material/Paper';
 interface FeaturedPostProps {
   postDetails: Post;
 }
@@ -16,8 +17,8 @@ const FeaturedPost: React.FC<FeaturedPostProps> = ({ postDetails }) => {
   // const { post } = useGetPostsQuery();
 
   return (
-    <article>
-      <Card sx={{ display: 'flex', minHeight: '100%' }}>
+    <Paper sx={{ width: '450px' }}>
+      <Card sx={{ display: 'flex', minHeight: '300px', width: 'px' }}>
         <CardContent sx={{ flex: 1, minHeight: '100%', position: 'relative' }}>
           <Typography component="h2" variant="h5">
             {postDetails?.title.substring(0, 20)} ...
@@ -44,7 +45,7 @@ const FeaturedPost: React.FC<FeaturedPostProps> = ({ postDetails }) => {
           alt={postDetails?.imageLabel}
         />
       </Card>
-    </article>
+    </Paper>
   );
 };
 

@@ -13,6 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Link as ReactLink } from 'react-router-dom';
+import { BasicModal } from './BasicModal';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { logout, selectUser } from '../features/users/usersSlice';
@@ -29,7 +30,12 @@ function ResponsiveAppBar() {
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-
+  const [currentPage, setCurrentPage] = React.useState('Home');
+  React.useEffect(() => {
+    if (currentPage === 'Home') {
+      navigate('/');
+    }
+  }, [currentPage]);
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -69,6 +75,15 @@ function ResponsiveAppBar() {
       </MenuItem>
     );
   });
+  const addButtons = (
+    <Container sx={{ maxHeight: '20px', cursor: 'pointer' }}>
+      {currentPage === 'Home' ? (
+        <BasicModal text="Add Post" post={undefined} context="add post" />
+      ) : (
+        <BasicModal text="Add Post" post={undefined} context="add user" />
+      )}
+    </Container>
+  );
 
   const buttons = pages.map((page) => {
     console.log(page, 'page');
@@ -168,6 +183,8 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {buttons}
           </Box>
+
+          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>{addButtons}</Box>
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">

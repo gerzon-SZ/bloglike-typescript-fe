@@ -1,6 +1,7 @@
 import { apiSlice } from '../api/apiSlice';
 import { createEntityAdapter } from '@reduxjs/toolkit';
 import { sub } from 'date-fns';
+import { nanoid } from '@reduxjs/toolkit';
 import type { EntityState } from '@reduxjs/toolkit';
 export interface Post {
   id: string;
@@ -12,9 +13,15 @@ export interface Post {
   imageLabel: string;
   date: string;
 }
+export interface initialPost {
+  id: string;
+  title: string;
+  body: string;
+  userId: string;
+}
 
 const postsAdapter = createEntityAdapter({
-  sortComparer: (a: Post, b: Post) => b.date.localeCompare(a.date),
+  sortComparer: (a: Post, b: Post) => b.createdAt.localeCompare(a.createdAt),
 });
 
 const initialState = postsAdapter.getInitialState();
@@ -28,8 +35,8 @@ export const postSlice = apiSlice.injectEndpoints({
       transformResponse(response: Post[]) {
         let min = 1;
         const posts = response.map((post) => {
-          if (!post?.date)
-            post.date = sub(new Date(), { minutes: min++ }).toISOString();
+          if (!post?.createdAt)
+            post.createdAt = sub(new Date(), { minutes: min++ }).toISOString();
           return {
             ...post,
           };
@@ -45,11 +52,15 @@ export const postSlice = apiSlice.injectEndpoints({
           : [{ type: 'Post', id: 'LIST' }],
     }),
 
-    addPost: build.mutation<Post, Partial<Post>>({
+    addPost: build.mutation<Post, Partial<initialPost>>({
       query: (body) => ({
         url: `posts`,
         method: 'POST',
-        body,
+        body: {
+          ...body,
+          createdAt: new Date().toISOString(),
+          id: 'P'.concat(nanoid()),
+        },
       }),
       invalidatesTags: [{ type: 'Post', id: 'LIST' }],
     }),
